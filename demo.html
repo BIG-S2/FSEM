@@ -1,0 +1,415 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>real_data</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-31"><meta name="DC.source" content="real_data.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1. Preprocessing</a></li><li><a href="#3">2. FSEM for FA data</a></li><li><a href="#4">2.1 Maximum likelihood estimation and local test</a></li><li><a href="#5">2.2 Weighted maximum likelihood estimation and local test</a></li><li><a href="#6">2.3 Global test</a></li><li><a href="#7">2.4 Covariance structure estimation</a></li><li><a href="#8">3. FSEM for MD data</a></li><li><a href="#9">3.1 Maximum likelihood estimation and local test</a></li><li><a href="#10">3.2 Weighted maximum likelihood estimation and local test</a></li><li><a href="#11">3.3 Global test</a></li><li><a href="#12">3.4 Covariance structure estimation</a></li><li><a href="#13">4. Confidence bands for beta</a></li><li><a href="#14">5. Plot figures</a></li><li><a href="#15">5.1 Local p values figure</a></li><li><a href="#16">5.2 Varying coefficient figure</a></li><li><a href="#17">5.3 Covariance structure figure</a></li></ul></div><pre class="codeinput">clear; clc;
+
+addpath(<span class="string">'src'</span>)
+
+load(<span class="string">'data/demo.mat'</span>);
+
+rng(1234567);
+</pre><h2>1. Preprocessing<a name="2"></a></h2><pre class="codeinput">[MZtp1,~,DZtp1,~,MDZti] = FSEM_index(famid,zygosity); <span class="comment">% famid and zygosity: N x 1 vector</span>
+n = sum(MZtp1) + sum(DZtp1) + sum(MDZti);
+
+age_MRI = (age_MRI-mean(age_MRI))/std(age_MRI);
+gender = (gender-mean(gender))/std(gender);
+X = [ones(length(age_MRI),1),gender,age_MRI]; <span class="comment">% X: N x 3 matrix - covariates matrix</span>
+
+FA = csvread(<span class="string">'data/FA_GENU.csv'</span>, 1, 1)'; <span class="comment">% FA: N x M matrix</span>
+FA(end,:) = [];
+FA(:, any(isnan(FA), 1)) = [];
+
+MD = csvread(<span class="string">'data/MD_GENU.csv'</span>, 1, 1)'; <span class="comment">% MD: N x M matrix</span>
+MD(end,:) = [];
+MD(:, any(isnan(MD), 1)) = [];
+
+meanFA = mean(FA(:));
+meanMD = mean(MD(:));
+maxMean = max([meanFA, meanMD]);
+FA = FA*(maxMean/meanFA);
+MD = MD*(maxMean/meanMD);
+
+sM = linspace(0, 1, size(FA,2));  <span class="comment">% 1 x M vector</span>
+h = 0.02;
+</pre><h2>2. FSEM for FA data<a name="3"></a></h2><h2>2.1 Maximum likelihood estimation and local test<a name="4"></a></h2><pre class="codeinput">[FA_paramsA, FA_paramsN] = FSEM_mle(FA, X, famid, zygosity);
+[FA_LRT_vec, FA_p_vec] = FSEM_lrt(FA_paramsA, FA_paramsN, FA, X, famid, zygosity);
+</pre><h2>2.2 Weighted maximum likelihood estimation and local test<a name="5"></a></h2><pre class="codeinput">[FA_betaA, FA_log_WsigmaA, FA_log_WsigmaN] = FSEM_wmle(FA, X, famid, zygosity, sM, h);
+FA_R = FA - X*FA_betaA;
+[FA_WLRT_vec, FA_Wp_vec] = FSEM_wlrt(FA_log_WsigmaA, FA_log_WsigmaN, FA_R, famid, zygosity, sM, h);
+</pre><h2>2.3 Global test<a name="6"></a></h2><pre class="codeinput">FA_p = FSEM_global_test(FA_R, famid, zygosity, 1e3);
+</pre><h2>2.4 Covariance structure estimation<a name="7"></a></h2><pre class="codeinput">FA_ob = FSEM_cov_ob(FA_R, famid, zygosity, sM);
+[FA_SigmaA_est, FA_SigmaC_est, FA_SigmaEG_est] = <span class="keyword">...</span>
+    FSEM_cov(FA_R, famid, zygosity, sM, FA_ob);
+</pre><h2>3. FSEM for MD data<a name="8"></a></h2><h2>3.1 Maximum likelihood estimation and local test<a name="9"></a></h2><pre class="codeinput">[MD_paramsA, MD_paramsN] = FSEM_mle(MD, X, famid, zygosity);
+[MD_LRT_vec, MD_p_vec] = FSEM_lrt(MD_paramsA, MD_paramsN, MD, X, famid, zygosity);
+</pre><h2>3.2 Weighted maximum likelihood estimation and local test<a name="10"></a></h2><pre class="codeinput">[MD_betaA, MD_log_WsigmaA, MD_log_WsigmaN] = FSEM_wmle(MD, X, famid, zygosity, sM, h);
+MD_R = MD - X*MD_betaA;
+[MD_WLRT_vec, MD_Wp_vec] = FSEM_wlrt(MD_log_WsigmaA, MD_log_WsigmaN, MD_R, famid, zygosity, sM, h);
+</pre><h2>3.3 Global test<a name="11"></a></h2><pre class="codeinput">MD_p = FSEM_global_test(MD_R, famid, zygosity, 1e3);
+</pre><h2>3.4 Covariance structure estimation<a name="12"></a></h2><pre class="codeinput">MD_ob = FSEM_cov_ob(MD_R, famid, zygosity, sM);
+[MD_SigmaA_est, MD_SigmaC_est, MD_SigmaEG_est] = <span class="keyword">...</span>
+    FSEM_cov(MD_R, famid, zygosity, sM, MD_ob);
+</pre><h2>4. Confidence bands for beta<a name="13"></a></h2><pre class="codeinput">M = size(MD,2);
+FA_paramsA_se = zeros(6,M);
+MD_paramsA_se = zeros(6,M);
+
+<span class="keyword">for</span> kk = 1:M
+    tmp = hessian(@(params) FSEM_lla(params,FA(:,kk),X,famid,zygosity), <span class="keyword">...</span>
+        FA_paramsA(:,kk));
+    tmp = diag(inv(tmp));
+    FA_paramsA_se(:,kk) = sqrt(2*tmp).*[exp(FA_paramsA(1:3,kk));ones(3,1)];
+
+    tmp = hessian(@(params) FSEM_lla(params,MD(:,kk),X,famid,zygosity), <span class="keyword">...</span>
+        MD_paramsA(:,kk));
+    tmp = diag(inv(tmp));
+    MD_paramsA_se(:,kk) = sqrt(2*tmp).*[exp(MD_paramsA(1:3,kk));ones(3,1)];
+<span class="keyword">end</span>
+
+save <span class="string">real_data.mat</span>
+</pre><pre class="codeoutput">Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  1.796811e-16. 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  1.269065e-16. 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  4.603672e-17. 
+Warning: Matrix is close to singular or badly scaled. Results may be inaccurate.
+RCOND =  1.670263e-16. 
+</pre><h2>5. Plot figures<a name="14"></a></h2><pre class="codeinput">eps = 1e-6;
+</pre><h2>5.1 Local p values figure<a name="15"></a></h2><pre class="codeinput">figure;
+FA_params_LRT = exp(FA_paramsA(1:3,:));
+FA_params_WLRT = exp(FA_log_WsigmaA(1:3,:));
+FA_herit_LRT = FA_params_LRT(1,:)./sum(FA_params_LRT);
+FA_herit_WLRT = FA_params_WLRT(1,:)./sum(FA_params_WLRT);
+
+subplot(2,2,1); plot(FA_herit_LRT,<span class="string">'r'</span>); hold <span class="string">on</span>;
+plot(FA_herit_WLRT,<span class="string">'b'</span>); hold <span class="string">on</span>;
+legend(<span class="string">'LRT'</span>,<span class="string">'WLRT'</span>)
+title(<span class="string">'FA: Estimated heritability along genu fiber tract'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'arclength-(a)'</span>,<span class="string">'FontSize'</span>,10);
+subplot(2,2,3); plot(-log10(max(FA_p_vec,eps)),<span class="string">'r'</span>); hold <span class="string">on</span>;
+plot(-log10(max(FA_Wp_vec,eps)),<span class="string">'b'</span>);
+line([0,100],[-log10(0.05) -log10(0.05)],<span class="string">'Color'</span>,<span class="string">'k'</span>);
+legend(<span class="string">'LRT'</span>,<span class="string">'WLRT'</span>);
+title(<span class="string">'FA: -log10(p) values along genu fiber tract'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'arclength-(c)'</span>,<span class="string">'FontSize'</span>,10);
+
+MD_params_LRT = exp(MD_paramsA(1:3,:));
+MD_params_WLRT = exp(MD_log_WsigmaA(1:3,:));
+MD_herit_LRT = MD_params_LRT(1,:)./sum(MD_params_LRT);
+MD_herit_WLRT = MD_params_WLRT(1,:)./sum(MD_params_WLRT);
+
+subplot(2,2,2); plot(MD_herit_LRT,<span class="string">'r'</span>); hold <span class="string">on</span>;
+plot(MD_herit_WLRT,<span class="string">'b'</span>); hold <span class="string">on</span>;
+legend(<span class="string">'LRT'</span>,<span class="string">'WLRT'</span>)
+
+title(<span class="string">'MD: Estimated heritability along genu fiber tract'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'arclength-(b)'</span>,<span class="string">'FontSize'</span>,10);
+subplot(2,2,4); plot(-log10(max(eps,MD_p_vec)),<span class="string">'r'</span>); hold <span class="string">on</span>;
+plot(-log10(max(eps,MD_Wp_vec)),<span class="string">'b'</span>);
+line([0,100],[-log10(0.05) -log10(0.05)],<span class="string">'Color'</span>,<span class="string">'k'</span>);
+legend(<span class="string">'LRT'</span>,<span class="string">'WLRT'</span>);
+title(<span class="string">'MD: -log10(p) values along genu fiber tract'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'arclength-(d)'</span>,<span class="string">'FontSize'</span>,10);
+</pre><img vspace="5" hspace="5" src="real_data_01.png" style="width:560px;height:420px;" alt=""> <h2>5.2 Varying coefficient figure<a name="16"></a></h2><pre class="codeinput">figure;
+subplot(2,3,1); plot(FA_paramsA(4,:),<span class="string">'b'</span>); xlabel(<span class="string">'arclength-(a)'</span>,<span class="string">'FontSize'</span>,10);
+ylabel(<span class="string">'95% confidence band'</span>, <span class="string">'FontSize'</span>, 10);
+hold <span class="string">on</span>; plot(FA_paramsA(4,:)+1.96*FA_paramsA_se(4,:),<span class="string">'--r'</span>);
+         plot(FA_paramsA(4,:)-1.96*FA_paramsA_se(4,:),<span class="string">'--r'</span>);
+         title(<span class="string">'FA: intercept'</span>,<span class="string">'FontSize'</span>,14);
+subplot(2,3,2); plot(FA_paramsA(5,:)); xlabel(<span class="string">'arclength-(b)'</span>,<span class="string">'FontSize'</span>,10);
+ylabel(<span class="string">'95% confidence band'</span>, <span class="string">'FontSize'</span>, 10);
+hold <span class="string">on</span>; plot(FA_paramsA(5,:)+1.96*FA_paramsA_se(5,:),<span class="string">'--r'</span>);
+         plot(FA_paramsA(5,:)-1.96*FA_paramsA_se(5,:),<span class="string">'--r'</span>);
+         title(<span class="string">'FA: gender'</span>,<span class="string">'FontSize'</span>,14);
+subplot(2,3,3); plot(FA_paramsA(6,:)); xlabel(<span class="string">'arclength-(c)'</span>,<span class="string">'FontSize'</span>,10);
+ylabel(<span class="string">'95% confidence band'</span>, <span class="string">'FontSize'</span>, 10);
+hold <span class="string">on</span>; plot(FA_paramsA(6,:)+1.96*FA_paramsA_se(6,:),<span class="string">'--r'</span>);
+         plot(FA_paramsA(6,:)-1.96*FA_paramsA_se(6,:),<span class="string">'--r'</span>);
+         title(<span class="string">'FA: age'</span>,<span class="string">'FontSize'</span>,14);
+subplot(2,3,4); plot(MD_paramsA(4,:)); xlabel(<span class="string">'arclength-(d)'</span>,<span class="string">'FontSize'</span>,10);
+ylabel(<span class="string">'95% confidence band'</span>, <span class="string">'FontSize'</span>, 10);
+hold <span class="string">on</span>; plot(MD_paramsA(4,:)+1.96*MD_paramsA_se(4,:),<span class="string">'--r'</span>);
+         plot(MD_paramsA(4,:)-1.96*MD_paramsA_se(4,:),<span class="string">'--r'</span>);
+         title(<span class="string">'MD: intercept'</span>,<span class="string">'FontSize'</span>,14);
+subplot(2,3,5); plot(MD_paramsA(5,:)); xlabel(<span class="string">'arclength-(e)'</span>,<span class="string">'FontSize'</span>,10);
+ylabel(<span class="string">'95% confidence band'</span>, <span class="string">'FontSize'</span>, 10);
+hold <span class="string">on</span>; plot(MD_paramsA(5,:)+1.96*MD_paramsA_se(5,:),<span class="string">'--r'</span>);
+         plot(MD_paramsA(5,:)-1.96*MD_paramsA_se(5,:),<span class="string">'--r'</span>);
+         title(<span class="string">'MD: gender'</span>,<span class="string">'FontSize'</span>,14);
+subplot(2,3,6); plot(MD_paramsA(6,:)); xlabel(<span class="string">'arclength-(f)'</span>,<span class="string">'FontSize'</span>,10);
+ylabel(<span class="string">'95% confidence band'</span>, <span class="string">'FontSize'</span>, 10);
+hold <span class="string">on</span>; plot(MD_paramsA(6,:)+1.96*MD_paramsA_se(6,:),<span class="string">'--r'</span>);
+         plot(MD_paramsA(6,:)-1.96*MD_paramsA_se(6,:),<span class="string">'--r'</span>);
+         title(<span class="string">'MD: age'</span>,<span class="string">'FontSize'</span>,14);
+</pre><img vspace="5" hspace="5" src="real_data_02.png" style="width:560px;height:420px;" alt=""> <h2>5.3 Covariance structure figure<a name="17"></a></h2><pre class="codeinput">FA_lb = min([min(FA_SigmaA_est(:)), min(FA_SigmaC_est(:)), min(FA_SigmaEG_est(:))]);
+FA_ub = max([max(FA_SigmaA_est(:)), max(FA_SigmaC_est(:)), max(FA_SigmaEG_est(:))]);
+MD_lb = min([min(MD_SigmaA_est(:)), min(MD_SigmaC_est(:)), min(MD_SigmaEG_est(:))]);
+MD_ub = max([max(MD_SigmaA_est(:)), max(MD_SigmaC_est(:)), max(MD_SigmaEG_est(:))]);
+
+set(gcf,<span class="string">'units'</span>,<span class="string">'points'</span>,<span class="string">'position'</span>,[10,10,1200,500])
+subplot(2,3,1); imagesc(FA_SigmaA_est, [FA_lb, FA_ub]);
+colorbar; title(<span class="string">'FA: Estimated Genetic Covariance'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'(a)'</span>,<span class="string">'FontSize'</span>,10);
+subplot(2,3,2); imagesc(FA_SigmaC_est, [FA_lb, FA_ub]);
+colorbar; title(<span class="string">'FA: Estimated Common Environmental Covariance'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'(b)'</span>,<span class="string">'FontSize'</span>,10);
+subplot(2,3,3); imagesc(FA_SigmaEG_est, [FA_lb, FA_ub]);
+colorbar; title(<span class="string">'FA: Estimated Unique Environmental Covariance'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'(c)'</span>,<span class="string">'FontSize'</span>,10);
+
+subplot(2,3,4); imagesc(MD_SigmaA_est, [MD_lb, MD_ub]);
+colorbar; title(<span class="string">'MD: Estimated Genetic Covariance'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'(d)'</span>,<span class="string">'FontSize'</span>,10);
+subplot(2,3,5); imagesc(MD_SigmaC_est, [MD_lb, MD_ub]);
+colorbar; title(<span class="string">'MD: Estimated Common Environmental Covariance'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'(e)'</span>,<span class="string">'FontSize'</span>,10);
+subplot(2,3,6); imagesc(MD_SigmaEG_est, [MD_lb, MD_ub]);
+colorbar; title(<span class="string">'MD: Estimated Unique Environmental Covariance'</span>,<span class="string">'FontSize'</span>,10);
+xlabel(<span class="string">'(f)'</span>,<span class="string">'FontSize'</span>,10);
+</pre><img vspace="5" hspace="5" src="real_data_03.png" style="width:1200px;height:500px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; clc;
+
+addpath('src')
+
+load('data/demo.mat');
+
+rng(1234567);
+%% 1. Preprocessing
+
+[MZtp1,~,DZtp1,~,MDZti] = FSEM_index(famid,zygosity); % famid and zygosity: N x 1 vector
+n = sum(MZtp1) + sum(DZtp1) + sum(MDZti);
+
+age_MRI = (age_MRI-mean(age_MRI))/std(age_MRI);
+gender = (gender-mean(gender))/std(gender);
+X = [ones(length(age_MRI),1),gender,age_MRI]; % X: N x 3 matrix - covariates matrix
+
+FA = csvread('data/FA_GENU.csv', 1, 1)'; % FA: N x M matrix
+FA(end,:) = [];
+FA(:, any(isnan(FA), 1)) = [];
+
+MD = csvread('data/MD_GENU.csv', 1, 1)'; % MD: N x M matrix
+MD(end,:) = [];
+MD(:, any(isnan(MD), 1)) = []; 
+
+meanFA = mean(FA(:));
+meanMD = mean(MD(:));
+maxMean = max([meanFA, meanMD]);
+FA = FA*(maxMean/meanFA);
+MD = MD*(maxMean/meanMD);
+
+sM = linspace(0, 1, size(FA,2));  % 1 x M vector
+h = 0.02;
+%% 2. FSEM for FA data
+%% 2.1 Maximum likelihood estimation and local test
+[FA_paramsA, FA_paramsN] = FSEM_mle(FA, X, famid, zygosity);
+[FA_LRT_vec, FA_p_vec] = FSEM_lrt(FA_paramsA, FA_paramsN, FA, X, famid, zygosity);
+%% 2.2 Weighted maximum likelihood estimation and local test
+[FA_betaA, FA_log_WsigmaA, FA_log_WsigmaN] = FSEM_wmle(FA, X, famid, zygosity, sM, h);
+FA_R = FA - X*FA_betaA;
+[FA_WLRT_vec, FA_Wp_vec] = FSEM_wlrt(FA_log_WsigmaA, FA_log_WsigmaN, FA_R, famid, zygosity, sM, h);
+%% 2.3 Global test
+FA_p = FSEM_global_test(FA_R, famid, zygosity, 1e3);
+%% 2.4 Covariance structure estimation
+FA_ob = FSEM_cov_ob(FA_R, famid, zygosity, sM);
+[FA_SigmaA_est, FA_SigmaC_est, FA_SigmaEG_est] = ...
+    FSEM_cov(FA_R, famid, zygosity, sM, FA_ob);
+%% 3. FSEM for MD data 
+%% 3.1 Maximum likelihood estimation and local test
+[MD_paramsA, MD_paramsN] = FSEM_mle(MD, X, famid, zygosity);
+[MD_LRT_vec, MD_p_vec] = FSEM_lrt(MD_paramsA, MD_paramsN, MD, X, famid, zygosity);
+%% 3.2 Weighted maximum likelihood estimation and local test
+[MD_betaA, MD_log_WsigmaA, MD_log_WsigmaN] = FSEM_wmle(MD, X, famid, zygosity, sM, h);
+MD_R = MD - X*MD_betaA;
+[MD_WLRT_vec, MD_Wp_vec] = FSEM_wlrt(MD_log_WsigmaA, MD_log_WsigmaN, MD_R, famid, zygosity, sM, h);
+%% 3.3 Global test
+MD_p = FSEM_global_test(MD_R, famid, zygosity, 1e3);
+%% 3.4 Covariance structure estimation
+MD_ob = FSEM_cov_ob(MD_R, famid, zygosity, sM);
+[MD_SigmaA_est, MD_SigmaC_est, MD_SigmaEG_est] = ...
+    FSEM_cov(MD_R, famid, zygosity, sM, MD_ob);
+
+%% 4. Confidence bands for beta
+M = size(MD,2);
+FA_paramsA_se = zeros(6,M); 
+MD_paramsA_se = zeros(6,M);
+
+for kk = 1:M
+    tmp = hessian(@(params) FSEM_lla(params,FA(:,kk),X,famid,zygosity), ...
+        FA_paramsA(:,kk));
+    tmp = diag(inv(tmp)); 
+    FA_paramsA_se(:,kk) = sqrt(2*tmp).*[exp(FA_paramsA(1:3,kk));ones(3,1)];
+    
+    tmp = hessian(@(params) FSEM_lla(params,MD(:,kk),X,famid,zygosity), ...
+        MD_paramsA(:,kk));
+    tmp = diag(inv(tmp)); 
+    MD_paramsA_se(:,kk) = sqrt(2*tmp).*[exp(MD_paramsA(1:3,kk));ones(3,1)];
+end
+
+save real_data.mat
+
+%% 5. Plot figures
+eps = 1e-6;
+%% 5.1 Local p values figure
+figure; 
+FA_params_LRT = exp(FA_paramsA(1:3,:));
+FA_params_WLRT = exp(FA_log_WsigmaA(1:3,:));
+FA_herit_LRT = FA_params_LRT(1,:)./sum(FA_params_LRT);
+FA_herit_WLRT = FA_params_WLRT(1,:)./sum(FA_params_WLRT);
+
+subplot(2,2,1); plot(FA_herit_LRT,'r'); hold on; 
+plot(FA_herit_WLRT,'b'); hold on;
+legend('LRT','WLRT')
+title('FA: Estimated heritability along genu fiber tract','FontSize',10); 
+xlabel('arclength-(a)','FontSize',10);
+subplot(2,2,3); plot(-log10(max(FA_p_vec,eps)),'r'); hold on; 
+plot(-log10(max(FA_Wp_vec,eps)),'b'); 
+line([0,100],[-log10(0.05) -log10(0.05)],'Color','k');
+legend('LRT','WLRT');
+title('FA: -log10(p) values along genu fiber tract','FontSize',10); 
+xlabel('arclength-(c)','FontSize',10);
+
+MD_params_LRT = exp(MD_paramsA(1:3,:));
+MD_params_WLRT = exp(MD_log_WsigmaA(1:3,:));
+MD_herit_LRT = MD_params_LRT(1,:)./sum(MD_params_LRT);
+MD_herit_WLRT = MD_params_WLRT(1,:)./sum(MD_params_WLRT);
+
+subplot(2,2,2); plot(MD_herit_LRT,'r'); hold on; 
+plot(MD_herit_WLRT,'b'); hold on; 
+legend('LRT','WLRT')
+
+title('MD: Estimated heritability along genu fiber tract','FontSize',10); 
+xlabel('arclength-(b)','FontSize',10);
+subplot(2,2,4); plot(-log10(max(eps,MD_p_vec)),'r'); hold on; 
+plot(-log10(max(eps,MD_Wp_vec)),'b'); 
+line([0,100],[-log10(0.05) -log10(0.05)],'Color','k');
+legend('LRT','WLRT');
+title('MD: -log10(p) values along genu fiber tract','FontSize',10); 
+xlabel('arclength-(d)','FontSize',10);
+
+%% 5.2 Varying coefficient figure
+figure; 
+subplot(2,3,1); plot(FA_paramsA(4,:),'b'); xlabel('arclength-(a)','FontSize',10);
+ylabel('95% confidence band', 'FontSize', 10);
+hold on; plot(FA_paramsA(4,:)+1.96*FA_paramsA_se(4,:),'REPLACE_WITH_DASH_DASHr'); 
+         plot(FA_paramsA(4,:)-1.96*FA_paramsA_se(4,:),'REPLACE_WITH_DASH_DASHr');
+         title('FA: intercept','FontSize',14);
+subplot(2,3,2); plot(FA_paramsA(5,:)); xlabel('arclength-(b)','FontSize',10);
+ylabel('95% confidence band', 'FontSize', 10);
+hold on; plot(FA_paramsA(5,:)+1.96*FA_paramsA_se(5,:),'REPLACE_WITH_DASH_DASHr'); 
+         plot(FA_paramsA(5,:)-1.96*FA_paramsA_se(5,:),'REPLACE_WITH_DASH_DASHr');
+         title('FA: gender','FontSize',14);
+subplot(2,3,3); plot(FA_paramsA(6,:)); xlabel('arclength-(c)','FontSize',10);
+ylabel('95% confidence band', 'FontSize', 10);
+hold on; plot(FA_paramsA(6,:)+1.96*FA_paramsA_se(6,:),'REPLACE_WITH_DASH_DASHr'); 
+         plot(FA_paramsA(6,:)-1.96*FA_paramsA_se(6,:),'REPLACE_WITH_DASH_DASHr');
+         title('FA: age','FontSize',14);
+subplot(2,3,4); plot(MD_paramsA(4,:)); xlabel('arclength-(d)','FontSize',10);
+ylabel('95% confidence band', 'FontSize', 10);
+hold on; plot(MD_paramsA(4,:)+1.96*MD_paramsA_se(4,:),'REPLACE_WITH_DASH_DASHr'); 
+         plot(MD_paramsA(4,:)-1.96*MD_paramsA_se(4,:),'REPLACE_WITH_DASH_DASHr');
+         title('MD: intercept','FontSize',14);
+subplot(2,3,5); plot(MD_paramsA(5,:)); xlabel('arclength-(e)','FontSize',10);
+ylabel('95% confidence band', 'FontSize', 10);
+hold on; plot(MD_paramsA(5,:)+1.96*MD_paramsA_se(5,:),'REPLACE_WITH_DASH_DASHr'); 
+         plot(MD_paramsA(5,:)-1.96*MD_paramsA_se(5,:),'REPLACE_WITH_DASH_DASHr');
+         title('MD: gender','FontSize',14);
+subplot(2,3,6); plot(MD_paramsA(6,:)); xlabel('arclength-(f)','FontSize',10);
+ylabel('95% confidence band', 'FontSize', 10);
+hold on; plot(MD_paramsA(6,:)+1.96*MD_paramsA_se(6,:),'REPLACE_WITH_DASH_DASHr'); 
+         plot(MD_paramsA(6,:)-1.96*MD_paramsA_se(6,:),'REPLACE_WITH_DASH_DASHr');
+         title('MD: age','FontSize',14);
+
+%% 5.3 Covariance structure figure
+FA_lb = min([min(FA_SigmaA_est(:)), min(FA_SigmaC_est(:)), min(FA_SigmaEG_est(:))]); 
+FA_ub = max([max(FA_SigmaA_est(:)), max(FA_SigmaC_est(:)), max(FA_SigmaEG_est(:))]); 
+MD_lb = min([min(MD_SigmaA_est(:)), min(MD_SigmaC_est(:)), min(MD_SigmaEG_est(:))]); 
+MD_ub = max([max(MD_SigmaA_est(:)), max(MD_SigmaC_est(:)), max(MD_SigmaEG_est(:))]); 
+
+set(gcf,'units','points','position',[10,10,1200,500])
+subplot(2,3,1); imagesc(FA_SigmaA_est, [FA_lb, FA_ub]); 
+colorbar; title('FA: Estimated Genetic Covariance','FontSize',10);
+xlabel('(a)','FontSize',10);
+subplot(2,3,2); imagesc(FA_SigmaC_est, [FA_lb, FA_ub]); 
+colorbar; title('FA: Estimated Common Environmental Covariance','FontSize',10);
+xlabel('(b)','FontSize',10);
+subplot(2,3,3); imagesc(FA_SigmaEG_est, [FA_lb, FA_ub]);
+colorbar; title('FA: Estimated Unique Environmental Covariance','FontSize',10);
+xlabel('(c)','FontSize',10);
+
+subplot(2,3,4); imagesc(MD_SigmaA_est, [MD_lb, MD_ub]); 
+colorbar; title('MD: Estimated Genetic Covariance','FontSize',10);
+xlabel('(d)','FontSize',10);
+subplot(2,3,5); imagesc(MD_SigmaC_est, [MD_lb, MD_ub]); 
+colorbar; title('MD: Estimated Common Environmental Covariance','FontSize',10);
+xlabel('(e)','FontSize',10);
+subplot(2,3,6); imagesc(MD_SigmaEG_est, [MD_lb, MD_ub]);
+colorbar; title('MD: Estimated Unique Environmental Covariance','FontSize',10);
+xlabel('(f)','FontSize',10);
+##### SOURCE END #####
+--></body></html>

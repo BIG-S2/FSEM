@@ -1,0 +1,107 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="3888379440" file="/Users/sluo/Documents/FSTMtbx/FSEM.prj" location="/Users/sluo/Documents/FSTMtbx" name="FSEM" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>FSEM</param.appname>
+    <param.authnamewatermark>Shikai Luo</param.authnamewatermark>
+    <param.email>sluo@ncsu.edu</param.email>
+    <param.company>North Carolina State University</param.company>
+    <param.summary>FSEM: Functional structural equation model for twin functional data.</param.summary>
+    <param.description>This toolbox contains all functions to do statistical analysis for paper, FSEM: Functional structural equation model for twin functional data.</param.description>
+    <param.screenshot>${PROJECT_ROOT}/ToolboxImage.jpg</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.output>${PROJECT_ROOT}/FSEM.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>2677fe82-3e57-4f8a-9491-c68e950a7ba2</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%</param.exclude.filters>
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples&gt;
+   &lt;exampleCategory name="FSEM"&gt;
+      &lt;example name="real_data" type="html"&gt;
+         &lt;file type="source"&gt;/html/real_data.html&lt;/file&gt;
+         &lt;file type="main"&gt;/real_data.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/real_data.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/real_data_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/real_data_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/real_data_03.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+&lt;/examples&gt;</param.examples>
+    <param.demosxml />
+    <param.apps />
+    <param.docs />
+    <param.matlabpath.excludes />
+    <unset>
+      <param.version />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.demosxml />
+      <param.apps />
+      <param.docs />
+      <param.matlabpath.excludes />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}/FSEM</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/FSEM/.DS_Store</file>
+      <file>${PROJECT_ROOT}/FSEM/coeff.fig</file>
+      <file>${PROJECT_ROOT}/FSEM/cov.fig</file>
+      <file>${PROJECT_ROOT}/FSEM/data</file>
+      <file>${PROJECT_ROOT}/FSEM/demos.xml</file>
+      <file>${PROJECT_ROOT}/FSEM/html</file>
+      <file>${PROJECT_ROOT}/FSEM/pval.fig</file>
+      <file>${PROJECT_ROOT}/FSEM/real_data.m</file>
+      <file>${PROJECT_ROOT}/FSEM/real_data.mat</file>
+      <file>${PROJECT_ROOT}/FSEM/src</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/sluo/Documents/FSTMtbx" name="FSEM.mltbx" optional="false">/Users/sluo/Documents/FSTMtbx/FSEM.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2016a.app</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.13.4</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
